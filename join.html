@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>สมัครสมาชิก - Anime Portal</title>
+        <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js"></script>
+    <!-- (ส่วนของ CSS ทั้งหมดตามที่คุณให้มา ไม่เปลี่ยนแปลง) -->
     <style>
         * {
             margin: 0;
@@ -285,7 +289,7 @@
     </style>
 </head>
 <body>
-    <!-- Animated Background -->
+   <!-- Animated Background -->
     <div class="bg-animation">
         <!-- Hearts -->
         <div class="floating-element heart" style="left: 10%; top: 20%; animation-delay: 0s;"></div>
@@ -665,6 +669,76 @@
         // Add new floating elements periodically
         setInterval(createFloatingHeart, 4000);
         setInterval(createFloatingBubble, 2000);
+
+        // Firebase Config - เปลี่ยนค่าตามโปรเจกต์ของคุณ
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            databaseURL: "https://YOUR_PROJECT_ID.firebaseio.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "SENDER_ID",
+            appId: "APP_ID"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // (ฟังก์ชัน validate ต่าง ๆ ตามที่คุณมีอยู่แล้ว ไม่เปลี่ยน)
+
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            document.getElementById('formSuccess').style.display = 'none';
+            document.getElementById('formError').style.display = 'none';
+
+            const validInputs = document.querySelectorAll('input.valid');
+            if (validInputs.length !== 4) {
+                showError('formError', 'กรุณากรอกข้อมูลให้ถูกต้องครบถ้วน');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showError('formError', 'Password ไม่ตรงกัน');
+                return;
+            }
+
+            const submitBtn = document.getElementById('submitBtn');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'กำลังสมัครสมาชิก...';
+            submitBtn.disabled = true;
+
+            const userRef = db.ref('users').push();
+            userRef.set({
+                username: username,
+                email: email,
+                password: password,
+                createdAt: new Date().toISOString()
+            }).then(() => {
+                showSuccess('formSuccess', 'สมัครสมาชิกสำเร็จ! กำลังเปลี่ยนหน้า...');
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+
+                setTimeout(() => {
+                    document.getElementById('registerForm').reset();
+                    document.querySelectorAll('input').forEach(input => input.className = '');
+                    document.querySelectorAll('.error-message, .success-message').forEach(div => div.style.display = 'none');
+                    document.querySelectorAll('span[id$="Check"]').forEach(span => span.innerHTML = '');
+                    document.getElementById('strengthFill').style.width = '0%';
+
+                    window.location.href = 'login.html';
+                }, 2000);
+            }).catch((error) => {
+                showError('formError', 'เกิดข้อผิดพลาดในการสมัครสมาชิก: ' + error.message);
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            });
+        });
     </script>
 </body>
 </html>
