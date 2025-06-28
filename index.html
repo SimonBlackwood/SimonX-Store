@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>เข้าสู่ระบบ - Anime Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Animated background elements */
+        .bg-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .floating-element {
+            position: absolute;
+            animation: float 6s ease-in-out infinite;
+            opacity: 0.1;
+        }
+
+        .star {
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 2s infinite;
+        }
+
+        .sakura {
+            width: 20px;
+            height: 20px;
+            background: #ffb3d9;
+            border-radius: 50% 0;
+            transform: rotate(45deg);
+            animation: fall 8s linear infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.1; }
+            50% { opacity: 0.3; }
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-100vh) rotate(0deg); }
+            100% { transform: translateY(100vh) rotate(360deg); }
+        }
+
+        /* Main container */
+        .container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-box {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-header h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .login-header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: rgba(255, 255, 255, 1);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .form-links {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-links a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .form-links a:hover {
+            color: #764ba2;
+        }
+
+        .contact-admin {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .contact-admin h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .contact-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .contact-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 8px 15px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            border-radius: 20px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .contact-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .success-message {
+            color: #27ae60;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        /* Responsive design */
+        @media (max-width: 480px) {
+            .login-box {
+                padding: 30px 20px;
+            }
+            
+            .login-header h1 {
+                font-size: 2em;
+            }
+            
+            .contact-links {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-animation">
+        <!-- Stars -->
+        <div class="floating-element star" style="left: 10%; top: 20%; animation-delay: 0s;"></div>
+        <div class="floating-element star" style="left: 20%; top: 80%; animation-delay: 1s;"></div>
+        <div class="floating-element star" style="left: 80%; top: 30%; animation-delay: 2s;"></div>
+        <div class="floating-element star" style="left: 90%; top: 70%; animation-delay: 3s;"></div>
+        <div class="floating-element star" style="left: 30%; top: 10%; animation-delay: 4s;"></div>
+        <div class="floating-element star" style="left: 70%; top: 90%; animation-delay: 5s;"></div>
+        
+        <!-- Sakura petals -->
+        <div class="floating-element sakura" style="left: 5%; animation-delay: 0s;"></div>
+        <div class="floating-element sakura" style="left: 15%; animation-delay: 2s;"></div>
+        <div class="floating-element sakura" style="left: 25%; animation-delay: 4s;"></div>
+        <div class="floating-element sakura" style="left: 35%; animation-delay: 6s;"></div>
+        <div class="floating-element sakura" style="left: 45%; animation-delay: 1s;"></div>
+        <div class="floating-element sakura" style="left: 55%; animation-delay: 3s;"></div>
+        <div class="floating-element sakura" style="left: 65%; animation-delay: 5s;"></div>
+        <div class="floating-element sakura" style="left: 75%; animation-delay: 7s;"></div>
+        <div class="floating-element sakura" style="left: 85%; animation-delay: 2s;"></div>
+        <div class="floating-element sakura" style="left: 95%; animation-delay: 4s;"></div>
+    </div>
+
+    <div class="container">
+        <div class="login-box">
+            <div class="login-header">
+                <h1>🌸 เข้าสู่ระบบ</h1>
+                <p>ยินดีต้อนรับสู่ Anime Portal</p>
+            </div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required>
+                    <div class="error-message" id="usernameError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                    <div class="error-message" id="passwordError"></div>
+                </div>
+
+                <button type="submit" class="login-btn">เข้าสู่ระบบ ✨</button>
+
+                <div class="form-links">
+                    <a href="join.html">ยังไม่มีบัญชี? สมัครสมาชิก</a>
+                </div>
+
+                <div class="success-message" id="successMessage"></div>
+                <div class="error-message" id="loginError"></div>
+            </form>
+
+            <div class="contact-admin">
+                <h3>ติดต่อ Admin</h3>
+                <div style="background: rgba(255,255,255,0.3); padding: 10px; border-radius: 8px; margin-bottom: 15px; font-size: 13px;">
+                    <strong>🔐 รหัสทดสอบ:</strong><br>
+                    Admin: <code>admin / animeadmin2024</code><br>
+                    User: <code>user / user123</code>
+                </div>
+                <div class="contact-links">
+                    <a href="#" class="contact-link" onclick="openContact('ig')">📷 Instagram</a>
+                    <a href="#" class="contact-link" onclick="openContact('facebook')">📘 Facebook</a>
+                    <a href="#" class="contact-link" onclick="openContact('discord')">💬 Discord</a>
+                    <a href="#" class="contact-link" onclick="openContact('fanpang')">🎮 FanPang</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Form validation and submission
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            // Clear previous error messages
+            clearErrors();
+            
+            // Basic validation
+            if (!username.trim()) {
+                showError('usernameError', 'กรุณากรอก Username');
+                return;
+            }
+            
+            if (!password.trim()) {
+                showError('passwordError', 'กรุณากรอก Password');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showError('passwordError', 'Password ต้องมีอย่างน้อย 6 ตัวอักษร');
+                return;
+            }
+            
+            // Simulate login process
+            simulateLogin(username, password);
+        });
+        
+        function clearErrors() {
+            const errorElements = document.querySelectorAll('.error-message');
+            errorElements.forEach(element => {
+                element.style.display = 'none';
+                element.textContent = '';
+            });
+            
+            document.getElementById('successMessage').style.display = 'none';
+            document.getElementById('loginError').style.display = 'none';
+        }
+        
+        function showError(elementId, message) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.style.display = 'block';
+        }
+        
+        function showSuccess(message) {
+            const element = document.getElementById('successMessage');
+            element.textContent = message;
+            element.style.display = 'block';
+        }
+        
+        function simulateLogin(username, password) {
+            // Show loading state
+            const submitBtn = document.querySelector('.login-btn');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'กำลังเข้าสู่ระบบ...';
+            submitBtn.disabled = true;
+            
+            // Simulate API call
+            setTimeout(() => {
+                // Reset button
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+                
+                // Check for admin credentials
+                if (username === 'admin' && password === 'animeadmin2024') {
+                    showSuccess('เข้าสู่ระบบแอดมินสำเร็จ! กำลังเข้าหลังบ้าน...');
+                    setTimeout(() => {
+                        // Store admin session and redirect to admin panel
+                        localStorage.setItem('isAdmin', 'true');
+                        localStorage.setItem('adminUsername', username);
+                        window.location.href = 'admin.html';
+                    }, 1500);
+                } else if (username === 'user' && password === 'user123') {
+                    showSuccess('เข้าสู่ระบบสำเร็จ! กำลังเข้าสู่เว็บไซต์...');
+                    setTimeout(() => {
+                        alert('เข้าสู่ระบบสำเร็จ! (หน้าหลักของผู้ใช้)');
+                    }, 1500);
+                } else {
+                    showError('loginError', 'Username หรือ Password ไม่ถูกต้อง');
+                }
+            }, 1500);
+        }
+        
+        function openContact(platform) {
+            const contacts = {
+                'ig': 'Instagram: @anime_portal_admin',
+                'facebook': 'Facebook: fb.me/animeportal',
+                'discord': 'Discord: AnimePortal#1234',
+                'fanpang': 'FanPang: AnimePortalSupport'
+            };
+            
+            alert(`ติดต่อผ่าน ${contacts[platform]}`);
+        }
+        
+        // Add some interactive effects
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'scale(1.02)';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'scale(1)';
+            });
+        });
+        
+        // Create additional floating elements dynamically
+        function createFloatingElement() {
+            const element = document.createElement('div');
+            element.className = 'floating-element star';
+            element.style.left = Math.random() * 100 + '%';
+            element.style.top = Math.random() * 100 + '%';
+            element.style.animationDelay = Math.random() * 5 + 's';
+            document.querySelector('.bg-animation').appendChild(element);
+            
+            // Remove element after animation
+            setTimeout(() => {
+                element.remove();
+            }, 6000);
+        }
+        
+        // Add new floating elements periodically
+        setInterval(createFloatingElement, 3000);
+    </script>
+</body>
+</html>

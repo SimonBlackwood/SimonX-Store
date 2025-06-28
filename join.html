@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>สมัครสมาชิก - Anime Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated background elements */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .floating-element {
+            position: absolute;
+            animation: float 8s ease-in-out infinite;
+            opacity: 0.15;
+        }
+
+        .heart {
+            width: 16px;
+            height: 16px;
+            background: #ff69b4;
+            transform: rotate(45deg);
+            animation: pulse 3s infinite;
+        }
+
+        .heart:before,
+        .heart:after {
+            content: '';
+            width: 16px;
+            height: 16px;
+            position: absolute;
+            background: #ff69b4;
+            border-radius: 50%;
+        }
+
+        .heart:before {
+            top: -8px;
+            left: 0;
+        }
+
+        .heart:after {
+            left: -8px;
+            top: 0;
+        }
+
+        .bubble {
+            width: 30px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            animation: bubble 6s linear infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(180deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: rotate(45deg) scale(1); }
+            50% { transform: rotate(45deg) scale(1.2); }
+        }
+
+        @keyframes bubble {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            10% { opacity: 0.2; }
+            90% { opacity: 0.2; }
+            100% { transform: translateY(-100vh) scale(1); opacity: 0; }
+        }
+
+        /* Main container */
+        .container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .register-box {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 450px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            margin: 20px 0;
+        }
+
+        .register-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .register-header h1 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #f093fb, #f5576c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .register-header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #f093fb;
+            background: rgba(255, 255, 255, 1);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(240, 147, 251, 0.2);
+        }
+
+        .form-group input.valid {
+            border-color: #27ae60;
+            background: rgba(46, 204, 113, 0.1);
+        }
+
+        .form-group input.invalid {
+            border-color: #e74c3c;
+            background: rgba(231, 76, 60, 0.1);
+        }
+
+        .register-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(45deg, #f093fb, #f5576c);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .register-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(240, 147, 251, 0.4);
+        }
+
+        .register-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .form-links {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-links a {
+            color: #f093fb;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .form-links a:hover {
+            color: #f5576c;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 13px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .success-message {
+            color: #27ae60;
+            font-size: 13px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .validation-info {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .strength-meter {
+            height: 4px;
+            background: #e1e5e9;
+            border-radius: 2px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+
+        .strength-meter-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #e74c3c 0%, #f39c12 50%, #27ae60 100%);
+            transition: width 0.3s ease;
+        }
+
+        /* Responsive design */
+        @media (max-width: 480px) {
+            .register-box {
+                padding: 30px 20px;
+            }
+            
+            .register-header h1 {
+                font-size: 2em;
+            }
+        }
+
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #ffffff30;
+            border-radius: 50%;
+            border-top-color: #ffffff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .checkmark {
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .crossmark {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-animation">
+        <!-- Hearts -->
+        <div class="floating-element heart" style="left: 10%; top: 20%; animation-delay: 0s;"></div>
+        <div class="floating-element heart" style="left: 80%; top: 30%; animation-delay: 2s;"></div>
+        <div class="floating-element heart" style="left: 20%; top: 70%; animation-delay: 4s;"></div>
+        <div class="floating-element heart" style="left: 90%; top: 80%; animation-delay: 6s;"></div>
+        
+        <!-- Bubbles -->
+        <div class="floating-element bubble" style="left: 5%; animation-delay: 0s;"></div>
+        <div class="floating-element bubble" style="left: 15%; animation-delay: 1s;"></div>
+        <div class="floating-element bubble" style="left: 25%; animation-delay: 2s;"></div>
+        <div class="floating-element bubble" style="left: 35%; animation-delay: 3s;"></div>
+        <div class="floating-element bubble" style="left: 45%; animation-delay: 4s;"></div>
+        <div class="floating-element bubble" style="left: 55%; animation-delay: 5s;"></div>
+        <div class="floating-element bubble" style="left: 65%; animation-delay: 6s;"></div>
+        <div class="floating-element bubble" style="left: 75%; animation-delay: 7s;"></div>
+        <div class="floating-element bubble" style="left: 85%; animation-delay: 8s;"></div>
+        <div class="floating-element bubble" style="left: 95%; animation-delay: 9s;"></div>
+    </div>
+
+    <div class="container">
+        <div class="register-box">
+            <div class="register-header">
+                <h1>💫 สมัครสมาชิก</h1>
+                <p>เข้าร่วมกับเรา Anime Portal</p>
+            </div>
+
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="username">Username <span id="usernameCheck"></span></label>
+                    <input type="text" id="username" name="username" required>
+                    <div class="validation-info">Username ต้องไม่ซ้ำกับคนอื่น</div>
+                    <div class="error-message" id="usernameError"></div>
+                    <div class="success-message" id="usernameSuccess"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email <span id="emailCheck"></span></label>
+                    <input type="email" id="email" name="email" required>
+                    <div class="validation-info">ต้องเป็น Email ที่ใช้งานได้จริง</div>
+                    <div class="error-message" id="emailError"></div>
+                    <div class="success-message" id="emailSuccess"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                    <div class="strength-meter">
+                        <div class="strength-meter-fill" id="strengthFill"></div>
+                    </div>
+                    <div class="validation-info">ควรมีอย่างน้อย 8 ตัวอักษร</div>
+                    <div class="error-message" id="passwordError"></div>
+                    <div class="success-message" id="passwordSuccess"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password <span id="confirmCheck"></span></label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required>
+                    <div class="validation-info">ต้องตรงกับ Password ด้านบน</div>
+                    <div class="error-message" id="confirmPasswordError"></div>
+                    <div class="success-message" id="confirmPasswordSuccess"></div>
+                </div>
+
+                <button type="submit" class="register-btn" id="submitBtn">สมัครสมาชิก ✨</button>
+
+                <div class="form-links">
+                    <a href="Login.html">มีบัญชีแล้ว? เข้าสู่ระบบ</a>
+                </div>
+
+                <div class="success-message" id="formSuccess"></div>
+                <div class="error-message" id="formError"></div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Simulated database of existing usernames and emails
+        const existingUsers = ['admin', 'user123', 'otaku', 'anime_lover', 'naruto_fan'];
+        const existingEmails = ['admin@test.com', 'user@test.com', 'otaku@gmail.com'];
+
+        // Real-time validation
+        document.getElementById('username').addEventListener('input', validateUsername);
+        document.getElementById('email').addEventListener('input', validateEmail);
+        document.getElementById('password').addEventListener('input', validatePassword);
+        document.getElementById('confirmPassword').addEventListener('input', validateConfirmPassword);
+
+        function validateUsername() {
+            const username = document.getElementById('username').value.trim();
+            const input = document.getElementById('username');
+            const errorDiv = document.getElementById('usernameError');
+            const successDiv = document.getElementById('usernameSuccess');
+            const checkSpan = document.getElementById('usernameCheck');
+
+            clearValidation('username');
+
+            if (username.length === 0) {
+                return;
+            }
+
+            if (username.length < 3) {
+                showError('usernameError', 'Username ต้องมีอย่างน้อย 3 ตัวอักษร');
+                input.className = 'invalid';
+                checkSpan.innerHTML = '<span class="crossmark">✗</span>';
+                return;
+            }
+
+            if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+                showError('usernameError', 'Username ใช้ได้เฉพาะตัวอักษร ตัวเลข และ _');
+                input.className = 'invalid';
+                checkSpan.innerHTML = '<span class="crossmark">✗</span>';
+                return;
+            }
+
+            // Simulate checking for existing username
+            checkSpan.innerHTML = '<span class="loading"></span>';
+            
+            setTimeout(() => {
+                if (existingUsers.includes(username.toLowerCase())) {
+                    showError('usernameError', 'Username นี้มีคนใช้แล้ว กรุณาเลือกชื่ออื่น');
+                    input.className = 'invalid';
+                    checkSpan.innerHTML = '<span class="crossmark">✗</span>';
+                } else {
+                    showSuccess('usernameSuccess', 'Username นี้ใช้ได้');
+                    input.className = 'valid';
+                    checkSpan.innerHTML = '<span class="checkmark">✓</span>';
+                }
+            }, 1000);
+        }
+
+        function validateEmail() {
+            const email = document.getElementById('email').value.trim();
+            const input = document.getElementById('email');
+            const errorDiv = document.getElementById('emailError');
+            const successDiv = document.getElementById('emailSuccess');
+            const checkSpan = document.getElementById('emailCheck');
+
+            clearValidation('email');
+
+            if (email.length === 0) {
+                return;
+            }
+
+            // Basic email format validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showError('emailError', 'รูปแบบ Email ไม่ถูกต้อง');
+                input.className = 'invalid';
+                checkSpan.innerHTML = '<span class="crossmark">✗</span>';
+                return;
+            }
+
+            // Check for invalid domains
+            const invalidDomains = ['test.test', 'fake.fake', 'invalid.invalid'];
+            const domain = email.split('@')[1];
+            if (invalidDomains.includes(domain)) {
+                showError('emailError', 'Email นี้ไม่สามารถใช้งานได้');
+                input.className = 'invalid';
+                checkSpan.innerHTML = '<span class="crossmark">✗</span>';
+                return;
+            }
+
+            // Simulate checking for existing email
+            checkSpan.innerHTML = '<span class="loading"></span>';
+            
+            setTimeout(() => {
+                if (existingEmails.includes(email.toLowerCase())) {
+                    showError('emailError', 'Email นี้มีคนใช้แล้ว');
+                    input.className = 'invalid';
+                    checkSpan.innerHTML = '<span class="crossmark">✗</span>';
+                } else {
+                    showSuccess('emailSuccess', 'Email นี้ใช้ได้');
+                    input.className = 'valid';
+                    checkSpan.innerHTML = '<span class="checkmark">✓</span>';
+                }
+            }, 1500);
+        }
+
+        function validatePassword() {
+            const password = document.getElementById('password').value;
+            const input = document.getElementById('password');
+            const strengthFill = document.getElementById('strengthFill');
+
+            clearValidation('password');
+
+            if (password.length === 0) {
+                strengthFill.style.width = '0%';
+                return;
+            }
+
+            // Calculate password strength
+            let strength = 0;
+            if (password.length >= 8) strength += 25;
+            if (password.match(/[a-z]+/)) strength += 25;
+            if (password.match(/[A-Z]+/)) strength += 25;
+            if (password.match(/[0-9]+/)) strength += 25;
+
+            strengthFill.style.width = strength + '%';
+
+            if (password.length < 6) {
+                showError('passwordError', 'Password ต้องมีอย่างน้อย 6 ตัวอักษร');
+                input.className = 'invalid';
+                return;
+            }
+
+            if (strength >= 75) {
+                showSuccess('passwordSuccess', 'Password แข็งแรงมาก');
+                input.className = 'valid';
+            } else if (strength >= 50) {
+                showSuccess('passwordSuccess', 'Password แข็งแรงพอใช้');
+                input.className = 'valid';
+            } else {
+                input.className = '';
+            }
+
+            // Re-validate confirm password if it has value
+            if (document.getElementById('confirmPassword').value) {
+                validateConfirmPassword();
+            }
+        }
+
+        function validateConfirmPassword() {
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const input = document.getElementById('confirmPassword');
+            const checkSpan = document.getElementById('confirmCheck');
+
+            clearValidation('confirmPassword');
+
+            if (confirmPassword.length === 0) {
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showError('confirmPasswordError', 'Password ไม่ตรงกัน');
+                input.className = 'invalid';
+                checkSpan.innerHTML = '<span class="crossmark">✗</span>';
+                return;
+            }
+
+            showSuccess('confirmPasswordSuccess', 'Password ตรงกัน');
+            input.className = 'valid';
+            checkSpan.innerHTML = '<span class="checkmark">✓</span>';
+        }
+
+        function clearValidation(fieldName) {
+            const errorDiv = document.getElementById(fieldName + 'Error');
+            const successDiv = document.getElementById(fieldName + 'Success');
+            
+            if (errorDiv) {
+                errorDiv.style.display = 'none';
+                errorDiv.textContent = '';
+            }
+            if (successDiv) {
+                successDiv.style.display = 'none';
+                successDiv.textContent = '';
+            }
+        }
+
+        function showError(elementId, message) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.style.display = 'block';
+        }
+
+        function showSuccess(elementId, message) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.style.display = 'block';
+        }
+
+        // Form submission
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            // Clear previous messages
+            document.getElementById('formSuccess').style.display = 'none';
+            document.getElementById('formError').style.display = 'none';
+            
+            // Validate all fields
+            let isValid = true;
+            
+            // Check if all validations pass
+            const validInputs = document.querySelectorAll('input.valid');
+            if (validInputs.length !== 4) {
+                showError('formError', 'กรุณากรอกข้อมูลให้ถูกต้องครบถ้วน');
+                return;
+            }
+            
+            if (!username || !email || !password || !confirmPassword) {
+                showError('formError', 'กรุณากรอกข้อมูลให้ครบถ้วน');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                showError('formError', 'Password ไม่ตรงกัน');
+                return;
+            }
+            
+            // Simulate registration process
+            const submitBtn = document.getElementById('submitBtn');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'กำลังสมัครสมาชิก...';
+            submitBtn.disabled = true;
+            
+            setTimeout(() => {
+                // Reset button
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+                
+                // Show success message
+                showSuccess('formSuccess', 'สมัครสมาชิกสำเร็จ! กำลังเปลี่ยนหน้า...');
+                
+                // Reset form after success
+                setTimeout(() => {
+                    document.getElementById('registerForm').reset();
+                    document.querySelectorAll('input').forEach(input => {
+                        input.className = '';
+                    });
+                    document.querySelectorAll('.error-message, .success-message').forEach(div => {
+                        div.style.display = 'none';
+                    });
+                    document.querySelectorAll('span[id$="Check"]').forEach(span => {
+                        span.innerHTML = '';
+                    });
+                    document.getElementById('strengthFill').style.width = '0%';
+                    
+                    // Redirect to login page
+                    alert('สมัครสมาชิกสำเร็จ! กำลังไปหน้าเข้าสู่ระบบ');
+                    // window.location.href = 'index.html';
+                }, 2000);
+            }, 2000);
+        });
+
+        // Add interactive effects
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'scale(1.02)';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'scale(1)';
+            });
+        });
+
+        // Create additional floating elements dynamically
+        function createFloatingHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'floating-element heart';
+            heart.style.left = Math.random() * 100 + '%';
+            heart.style.top = '100%';
+            heart.style.animationDelay = '0s';
+            heart.style.animation = 'float 8s ease-in-out infinite';
+            document.querySelector('.bg-animation').appendChild(heart);
+            
+            setTimeout(() => {
+                heart.remove();
+            }, 8000);
+        }
+
+        function createFloatingBubble() {
+            const bubble = document.createElement('div');
+            bubble.className = 'floating-element bubble';
+            bubble.style.left = Math.random() * 100 + '%';
+            bubble.style.animationDelay = '0s';
+            document.querySelector('.bg-animation').appendChild(bubble);
+            
+            setTimeout(() => {
+                bubble.remove();
+            }, 6000);
+        }
+
+        // Add new floating elements periodically
+        setInterval(createFloatingHeart, 4000);
+        setInterval(createFloatingBubble, 2000);
+    </script>
+</body>
+</html>
